@@ -1,4 +1,5 @@
 import os
+from abc import ABC, abstractmethod
 from AdressBook.AB import main as ab_main
 from NoteBook.NB import main as nb_main
 from Map.Map import main as map_main
@@ -8,17 +9,26 @@ from Game.game import main as game_main
 def cls():
     os.system(['clear', 'cls'][os.name == 'nt'])
 
-class Menu:
-    @staticmethod
-    def display_menu():
+class Menu(ABC):
+
+    @abstractmethod
+    def display_menu(self):
+        pass
+
+    @abstractmethod
+    def run_selected_option(self, choice):
+        pass
+
+class ConcreteMenu(Menu):
+
+    def display_menu(self):
         cls()
         print('MENU')
         choice = input(
             'Вітаю, я ваш персональний помічник.\nОберіть функцію:\n1.Записна книжка\n2.Нотатник\n3.Карта\n4.Сортування папки\n5.Гра\n0.Вихід\n>>>')
         return choice
 
-    @staticmethod
-    def run_selected_option(choice):
+    def run_selected_option(self, choice):
         if choice == '1':
             cls()
             ab_main()
@@ -36,11 +46,12 @@ class Menu:
             game_main()
 
 def main():
+    concrete_menu = ConcreteMenu()
     while True:
-        choice = Menu.display_menu()
+        choice = concrete_menu.display_menu()
         if choice == '0':
             break
-        Menu.run_selected_option(choice)
+        concrete_menu.run_selected_option(choice)
 
 if __name__ == '__main__':
     main()
